@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/retro_games_network
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        database: postgresql
+        database-platform: org.hibernate.dialect.PostgresSQLDialect
+  mail:
+    host: localhost
+    port: 1025
+    username: guo
+    password: guo
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+server:
+  port: 8088
+
+application:
+  security:
+    jwt:
+      secret-key: FCFBDB07FA949DA4B0B7BA0D650045E4DA1144D661BF6F7C955D5166AF8C3BEA
+      expiration: 8640000
+    mailing:
+      frontend:
+        activation-url: http://localhost:4200/activate-account
