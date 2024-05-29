@@ -1,5 +1,7 @@
 package com.dhguo.retrogamesnetwork.handler;
 
+import com.dhguo.retrogamesnetwork.exception.InvalidImageException;
+import com.dhguo.retrogamesnetwork.exception.OperationNotPermittedException;
 import jakarta.mail.MessagingException;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,6 +47,16 @@ public class GlobalExceptionHandler {
                 .build());
   }
 
+  @ExceptionHandler(OperationNotPermittedException.class)
+  public ResponseEntity<ExceptionResponse> handleException(OperationNotPermittedException exp) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(
+            ExceptionResponse.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .errorMessage("Not authorized.")
+                .build());
+  }
+
   @ExceptionHandler(MessagingException.class)
   public ResponseEntity<ExceptionResponse> handleException(MessagingException exp) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -58,10 +70,13 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException exp) {
     Set<String> errors = new HashSet<>();
-    exp.getBindingResult().getAllErrors().forEach(error -> {
-      var errorMessage = error.getDefaultMessage();
-      errors.add(errorMessage);
-    });
+    exp.getBindingResult()
+        .getAllErrors()
+        .forEach(
+            error -> {
+              var errorMessage = error.getDefaultMessage();
+              errors.add(errorMessage);
+            });
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(
@@ -69,6 +84,16 @@ public class GlobalExceptionHandler {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .errorMessage("Bad request.")
                 .validationErrors(errors)
+                .build());
+  }
+
+  @ExceptionHandler(InvalidImageException.class)
+  public ResponseEntity<ExceptionResponse> handleException(InvalidImageException exp) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(
+            ExceptionResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .errorMessage(exp.getMessage())
                 .build());
   }
 

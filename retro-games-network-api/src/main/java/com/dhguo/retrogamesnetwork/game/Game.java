@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,4 +47,15 @@ public class Game extends BaseEntity {
 
   @OneToMany(mappedBy = "game")
   private List<GameTransactionHistory> histories;
+
+  @Transient
+  public double getRating() {
+    if (feedbacks == null || feedbacks.isEmpty()) {
+      return 0.0;
+    }
+
+    var rating = feedbacks.stream().mapToDouble(Feedback::getRating).average().orElse(0.0);
+
+    return Math.round(rating * 10.0) / 10.0;
+  }
 }
