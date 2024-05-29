@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 public class FeedbackResponse {
 
-  private Double note;
+  private Double rating;
   private String comment;
   private boolean ownFeedback;
 }

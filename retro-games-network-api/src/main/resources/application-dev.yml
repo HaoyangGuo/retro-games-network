@@ -1,4 +1,7 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
   datasource:
     url: jdbc:postgresql://localhost:5432/retro_games_network
     username: username
@@ -29,7 +32,12 @@ spring:
         writetimeout: 5000
 
 server:
+  servlet:
+    context-path: /api/v1/
   port: 8088
+
+springdoc:
+  default-produces-media-type: application/json
 
 application:
   security:

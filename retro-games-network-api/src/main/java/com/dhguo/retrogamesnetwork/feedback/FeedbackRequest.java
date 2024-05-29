@@ -21,7 +21,7 @@ public class FeedbackRequest {
   @Positive(message = "200")
   @Min(value = 0, message = "201")
   @Max(value = 5, message = "202")
-  Double note;
+  Double rating;
 
   @NotNull(message = "203")
   @NotEmpty(message = "203")
@@ -29,5 +29,5 @@ public class FeedbackRequest {
   String comment;
 
   @NotNull(message = "204")
-  Integer bookId;
+  Integer gameId;
 }

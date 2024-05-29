@@ -24,19 +24,17 @@ public class FeedbackController {
 
   @PostMapping
   public ResponseEntity<Integer> saveFeedback(
-      @Valid @RequestBody FeedbackRequest request,
-      Authentication connectedUser
-  ) {
+      @Valid @RequestBody FeedbackRequest request, Authentication connectedUser) {
     return ResponseEntity.ok(feedbackService.save(request, connectedUser));
   }
 
-  @GetMapping("/book/{book-id}")
-  public ResponseEntity<PageResponse<FeedbackResponse>> findAllFeedbacksByBook(
-      @PathVariable("book-id") Integer bookId,
+  @GetMapping("game/{game-id}")
+  public ResponseEntity<PageResponse<FeedbackResponse>> findAllFeedbacksByGame(
+      @PathVariable("game-id") Integer gameId,
       @RequestParam(name = "page", defaultValue = "0", required = false) int page,
       @RequestParam(name = "size", defaultValue = "10", required = false) int size,
-      Authentication connectedUser
-  ) {
-    return ResponseEntity.ok(feedbackService.findAllFeedbacksByBook(bookId, page, size, connectedUser));
+      Authentication connectedUser) {
+    return ResponseEntity.ok(
+        feedbackService.findAllFeedbacksByGame(gameId, page, size, connectedUser));
   }
 }
