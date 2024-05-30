@@ -201,11 +201,6 @@ public class GameService {
                 () ->
                     new EntityNotFoundException("No game with the ID: " + gameId + " was found."));
 
-    // TODO: test if !game.isShareable() is needed
-    if (game.isArchived()) {
-      throw new OperationNotPermittedException("Game is not available.");
-    }
-
     User user = (User) connectedUser.getPrincipal();
 
     if (Objects.equals(game.getOwner().getId(), user.getId())) {
@@ -230,21 +225,16 @@ public class GameService {
                 () ->
                     new EntityNotFoundException("No game with the ID: " + gameId + " was found."));
 
-    // TODO: test if !game.isShareable() is needed
-    if (game.isArchived()) {
-      throw new OperationNotPermittedException("Game is not available.");
-    }
-
     User user = (User) connectedUser.getPrincipal();
 
-    if (Objects.equals(game.getOwner().getId(), user.getId())) {
-      throw new OperationNotPermittedException("You cannot return your own game.");
+    if (!Objects.equals(game.getOwner().getId(), user.getId())) {
+      throw new OperationNotPermittedException("You cannot approve this return.");
     }
 
     GameTransactionHistory gameTransactionHistory =
         gameTransactionHistoryRepository
             .findByGameIdAndOwnerId(gameId, user.getId())
-            .orElseThrow(() -> new OperationNotPermittedException("You cannot"));
+            .orElseThrow(() -> new OperationNotPermittedException("You cannot approve this return."));
     gameTransactionHistory.setReturnApproved(true);
 
     return gameTransactionHistoryRepository.save(gameTransactionHistory).getId();

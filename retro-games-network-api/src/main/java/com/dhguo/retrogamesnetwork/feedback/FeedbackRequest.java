@@ -18,16 +18,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class FeedbackRequest {
-  @Positive(message = "200")
-  @Min(value = 0, message = "201")
-  @Max(value = 5, message = "202")
+  @Positive(message = "Rating has to be positive.")
+  @Min(value = 0, message = "Rating has to be in the range 0 - 5")
+  @Max(value = 5, message = "Rating has to be in the range 0 - 5")
   Double rating;
 
-  @NotNull(message = "203")
-  @NotEmpty(message = "203")
-  @NotBlank(message = "203")
+  @NotNull(message = "Comment cannot be null")
+  @NotEmpty(message = "Comment cannot be empty")
+  @NotBlank(message = "Comment cannot be blank")
   String comment;
 
-  @NotNull(message = "204")
+  @NotNull(message = "Game ID cannot be null")
   Integer gameId;
 }

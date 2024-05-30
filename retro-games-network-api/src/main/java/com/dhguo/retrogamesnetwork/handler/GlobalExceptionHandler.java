@@ -3,6 +3,7 @@ package com.dhguo.retrogamesnetwork.handler;
 import com.dhguo.retrogamesnetwork.exception.InvalidImageException;
 import com.dhguo.retrogamesnetwork.exception.OperationNotPermittedException;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
         .body(
             ExceptionResponse.builder()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .errorMessage("Not authorized.")
+                .errorMessage(exp.getMessage())
                 .build());
   }
 
@@ -84,6 +85,16 @@ public class GlobalExceptionHandler {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .errorMessage("Bad request.")
                 .validationErrors(errors)
+                .build());
+  }
+
+  @ExceptionHandler(EntityNotFoundException.class)
+  public ResponseEntity<ExceptionResponse> handleException(EntityNotFoundException exp) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(
+            ExceptionResponse.builder()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .errorMessage(exp.getMessage())
                 .build());
   }
 

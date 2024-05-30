@@ -14,6 +14,8 @@ public interface GameTransactionHistoryRepository
       SELECT history
       FROM GameTransactionHistory history
       WHERE history.user.id = :userId
+      AND history.returned = false
+      AND history.returnApproved = false
       """)
   Page<GameTransactionHistory> findAllBorrowedGames(Pageable pageable, Integer userId);
 
@@ -22,6 +24,7 @@ public interface GameTransactionHistoryRepository
       SELECT history
       FROM GameTransactionHistory history
       WHERE history.game.owner.id = :userId
+      AND history.returnApproved = false
       """)
   Page<GameTransactionHistory> findAllReturnedGames(Pageable pageable, Integer userId);
 
