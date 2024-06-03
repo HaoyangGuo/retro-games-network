@@ -1,0 +1,19 @@
+meta {
+  name: upload image
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8088/api/v1/games/image/1
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJmdWxsTmFtZSI6Ikhhb3lhbmcgR3VvIiwic3ViIjoiaDFndW9AdWNzZC5lZHUiLCJpYXQiOjE3MTY5MzU2ODcsImV4cCI6MTcxNjk0NDMyNywiYXV0aG9yaXRpZXMiOlsiVVNFUiJdfQ.Y8MNFtJwBs5mmn5agR4hnjeZPMq2hOgl6PyxgX4kagdyHqmjJshOLky_xfDK4lBS
+}
+
+body:multipart-form {
+  image: @file(/Users/haoyangguo/Downloads/test3.gif)
+}

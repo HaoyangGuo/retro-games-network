@@ -28,13 +28,15 @@ public class SecurityConfig {
   private final JwtFilter jwtAuthFilter;
   private final AuthenticationProvider authenticationProvider;
 
-  @Value("${application.security.allowed-origin}")
-  private String allowedOrigin;
+  @Value("${application.security.allowed-origins}")
+  private List<String> allowedOrigins;
 
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of(allowedOrigin));
+    configuration.setAllowedOrigins(allowedOrigins);
+    configuration.setAllowedHeaders(List.of("Content-Type", "api_key", "Authorization", "Access-Control-Allow-Origin"));
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;

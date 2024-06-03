@@ -31,14 +31,6 @@ spring:
         timeout: 3000
         writetimeout: 5000
 
-server:
-  servlet:
-    context-path: /api/v1/
-  port: 8088
-
-springdoc:
-  default-produces-media-type: application/json
-
 application:
   security:
     jwt:

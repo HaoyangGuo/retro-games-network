@@ -1,0 +1,25 @@
+meta {
+  name: save game
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8088/api/v1/games
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJmdWxsTmFtZSI6Ikhhb3lhbmcgR3VvIiwic3ViIjoiaDFndW9AdWNzZC5lZHUiLCJpYXQiOjE3MTY4ODA2NTAsImV4cCI6MTcxNjg4OTI5MCwiYXV0aG9yaXRpZXMiOlsiVVNFUiJdfQ.0Si2Q1-KgikJ-4ujq12tbYzyAWCDkM1a4kd_hI63y9Rk-WwWn7oNuTIEVtEQ5PbQ
+}
+
+body:json {
+  {
+    "title": "test",
+    "description": "test",
+    "platform": "test",
+    "publisher": "test",
+    "imageUrl": "test"
+  }
+}

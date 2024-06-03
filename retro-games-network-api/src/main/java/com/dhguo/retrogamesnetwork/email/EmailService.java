@@ -1,5 +1,6 @@
 package com.dhguo.retrogamesnetwork.email;
 
+import com.dhguo.retrogamesnetwork.exception.VerificationEmailSendException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
@@ -8,7 +9,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -19,21 +19,21 @@ public class EmailService {
 
   private final JavaMailSender mailSender;
   private final SpringTemplateEngine templateEngine;
-
-  @Async
+  
+//  @Async
   public void sendEmail(
       String to,
       String username,
-      EmailTemplateName emailTemplate,
+      String emailTemplate,
       String confirmationUrl,
       String activationCode,
       String subject)
-      throws MessagingException {
+      throws MessagingException, VerificationEmailSendException {
     String templateName;
     if (emailTemplate == null) {
       templateName = "confirm-email";
     } else {
-      templateName = String.valueOf(emailTemplate.name());
+      templateName = emailTemplate;
     }
 
     MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -48,14 +48,19 @@ public class EmailService {
     Context context = new Context();
     context.setVariables(properties);
 
-    helper.setFrom("contact-no-reply@dhguo.dev");
+    helper.setFrom("no-reply@dhguo.dev");
     helper.setTo(to);
     helper.setSubject(subject);
 
     String template = templateEngine.process(templateName, context);
 
     helper.setText(template, true);
-
-    mailSender.send(mimeMessage);
+    
+    try {
+      mailSender.send(mimeMessage);
+    } catch (Exception exp) {
+      exp.printStackTrace();
+      throw new VerificationEmailSendException();
+    }
   }
 }

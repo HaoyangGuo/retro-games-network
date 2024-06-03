@@ -1,0 +1,15 @@
+meta {
+  name: activate account
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8088/api/v1/auth/activate-account?token=503798
+  body: none
+  auth: none
+}
+
+query {
+  token: 503798
+}

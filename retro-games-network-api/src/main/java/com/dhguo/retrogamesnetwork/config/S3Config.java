@@ -25,7 +25,7 @@ public class S3Config {
   }
 
   @Bean
-  @Profile("!dev")
+  @Profile("prod")
   public S3Client s3ClientProd() {
     return S3Client.builder().region(Region.US_EAST_1).build();
   }

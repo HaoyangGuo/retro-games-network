@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: prod
+
+server:
+  servlet:
+    context-path: /api/v1/
+  port: 8088
+
+springdoc:
+  default-produces-media-type: application/json

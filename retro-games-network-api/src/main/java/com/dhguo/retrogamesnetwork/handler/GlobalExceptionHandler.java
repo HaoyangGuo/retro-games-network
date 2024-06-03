@@ -1,13 +1,16 @@
 package com.dhguo.retrogamesnetwork.handler;
 
+import com.dhguo.retrogamesnetwork.exception.EmailAlreadyInUseException;
 import com.dhguo.retrogamesnetwork.exception.InvalidImageException;
 import com.dhguo.retrogamesnetwork.exception.OperationNotPermittedException;
+import com.dhguo.retrogamesnetwork.exception.VerificationEmailSendException;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -58,6 +61,26 @@ public class GlobalExceptionHandler {
                 .build());
   }
 
+  @ExceptionHandler(EmailAlreadyInUseException.class)
+  public ResponseEntity<ExceptionResponse> handleException(EmailAlreadyInUseException exp) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(
+            ExceptionResponse.builder()
+                .statusCode(HttpStatus.CONFLICT.value())
+                .errorMessage("Email already in use.")
+                .build());
+  }
+
+  @ExceptionHandler(VerificationEmailSendException.class)
+  public ResponseEntity<ExceptionResponse> handleException(VerificationEmailSendException exp) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(
+            ExceptionResponse.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .errorMessage("An error occurred while trying to send you a verification email, please try again later.")
+                .build());
+  }
+
   @ExceptionHandler(MessagingException.class)
   public ResponseEntity<ExceptionResponse> handleException(MessagingException exp) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -85,6 +108,16 @@ public class GlobalExceptionHandler {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .errorMessage("Bad request.")
                 .validationErrors(errors)
+                .build());
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ExceptionResponse> handleException(HttpMessageNotReadableException exp) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(
+            ExceptionResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .errorMessage("Invalid JSON body format.")
                 .build());
   }
 

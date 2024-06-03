@@ -281,7 +281,7 @@ public class GameService {
       s3Client.deleteObject(deleteObjectRequest);
     }
 
-    game.setImageUrl("d2f5vme40jc1ky.cloudfront.net/retro-games-network-images/" + uniqueFilename);
+    game.setImageUrl("https://d2f5vme40jc1ky.cloudfront.net/retro-games-network-images/" + uniqueFilename);
     gameRepository.save(game);
   }
 }

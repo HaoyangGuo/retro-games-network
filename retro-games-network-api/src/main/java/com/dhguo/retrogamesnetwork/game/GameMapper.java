@@ -8,13 +8,12 @@ public class GameMapper {
 
   public Game toGame(GameRequest request) {
     return Game.builder()
-        .id(request.getId())
         .title(request.getTitle())
         .description(request.getDescription())
         .platform(request.getPlatform())
         .publisher(request.getPublisher())
         .archived(false)
-        .shareable(request.isShareable())
+        .shareable(false)
         .build();
   }
 

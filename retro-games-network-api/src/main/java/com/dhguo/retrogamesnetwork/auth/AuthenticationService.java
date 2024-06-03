@@ -1,7 +1,8 @@
 package com.dhguo.retrogamesnetwork.auth;
 
 import com.dhguo.retrogamesnetwork.email.EmailService;
-import com.dhguo.retrogamesnetwork.email.EmailTemplateName;
+import com.dhguo.retrogamesnetwork.exception.EmailAlreadyInUseException;
+import com.dhguo.retrogamesnetwork.exception.VerificationEmailSendException;
 import com.dhguo.retrogamesnetwork.role.Role;
 import com.dhguo.retrogamesnetwork.role.RoleRepository;
 import com.dhguo.retrogamesnetwork.security.JwtService;
@@ -15,6 +16,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,11 +40,18 @@ public class AuthenticationService {
   @Value("${application.security.mailing.frontend.activation-url}")
   private String activationUrl;
 
+  @Transactional
   public void register(RegistrationRequest request) throws MessagingException {
     Role userRole =
         roleRepository
             .findByName("USER")
             .orElseThrow(() -> new IllegalStateException("ROLE USER was not initialized"));
+
+    Optional<User> existedUser = userRepository.findByEmail(request.getEmail());
+    if (existedUser.isPresent()) {
+      throw new EmailAlreadyInUseException();
+    }
+
 
     User user =
         User.builder()
@@ -54,8 +63,14 @@ public class AuthenticationService {
             .enabled(false)
             .roles(List.of(userRole))
             .build();
+
     userRepository.save(user);
-    sendValidationEmail(user);
+    try {
+      sendValidationEmail(user);
+    } catch (VerificationEmailSendException exp) {
+
+      throw new VerificationEmailSendException();
+    }
   }
 
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -70,13 +85,19 @@ public class AuthenticationService {
     return AuthenticationResponse.builder().token(jwtToken).build();
   }
 
-  public void activateAccount(String token) throws MessagingException {
-    Token savedToken = tokenRepository.findByToken(token).orElseThrow(() -> new RuntimeException("Invalid Token"));
+  public void activateAccount(String token)
+      throws MessagingException {
+    Token savedToken =
+        tokenRepository.findByToken(token).orElseThrow(() -> new RuntimeException("Invalid Token"));
     if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
       sendValidationEmail(savedToken.getUser());
-      throw new RuntimeException("Activation token has expired, A new token has been sent to the same email address");
+      throw new RuntimeException(
+          "Activation token has expired, A new token has been sent to the same email address");
     }
-    var user = userRepository.findById(savedToken.getUser().getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    var user =
+        userRepository
+            .findById(savedToken.getUser().getId())
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     user.setEnabled(true);
     userRepository.save(user);
@@ -84,13 +105,14 @@ public class AuthenticationService {
     tokenRepository.save(savedToken);
   }
 
-  private void sendValidationEmail(User user) throws MessagingException {
+  private void sendValidationEmail(User user)
+      throws MessagingException {
     var newToken = generateAndSaveActivationToken(user);
 
     emailService.sendEmail(
         user.getUsername(),
         user.fullName(),
-        EmailTemplateName.ACTIVATE_ACCOUNT,
+        "activate_account",
         activationUrl,
         newToken,
         "Account Activation");

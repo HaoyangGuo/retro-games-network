@@ -15,8 +15,8 @@ import io.swagger.v3.oas.annotations.servers.Server;
             name = "Haoyang Guo",
             email = "hyg.haoyang@gmail.com"
         ),
-        description = "OpenApi documentation for Retro Game Network API",
-        title = "OpenApi specification - Dhguo",
+        description = "OpenApi documentation for Retro Games Network API",
+        title = "OpenApi documentation for Retro Games Network API - By Haoyang Guo",
         version = "1.0",
         termsOfService = "Terms of service"
     ),
@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         ),
         @Server(
             description = "PROD ENV",
-            url = "https://retro-games-network-api.dhguo.dev"
+            url = "https://retro-games-network-api.dhguo.dev/api/v1"
         )
     },
     security = {
